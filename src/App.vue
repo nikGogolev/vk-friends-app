@@ -1,10 +1,21 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
   <router-view />
 </template>
+
+<script>
+import store from "./store";
+import { LOAD_FRIENDS } from "./store/mutationTypes";
+export default {
+  created() {
+    store.commit(LOAD_FRIENDS);
+    // window.location.href =
+    //   "https://oauth.vk.com/authorize?client_id=1&display=page&redirect_uri=http://localhost:8080&scope=friends&response_type=token&v=5.131&state=123456";
+    // router.(
+    //   "https://oauth.vk.com/authorize?client_id=1&display=page&redirect_uri=http://localhost:8080&scope=friends&response_type=token&v=5.131&state=123456"
+    // );
+  },
+};
+</script>
 
 <style>
 #app {
