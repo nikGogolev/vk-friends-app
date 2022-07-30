@@ -3,7 +3,7 @@
     <input
       type="text"
       v-model="searchText"
-      @input="search"
+      @input="onInput"
       class="search-input"
       placeholder="Введите имя пользователя или идентификатор"
     />
