@@ -1,91 +1,142 @@
 <template>
-  <div class="home">
-    <add-friend-form :onInput="onInput" />
+  <div class="main_container" v-if="authorized">
+    <div class="friend_list-container">
+      <add-user-form @error="(errorText) => setError(errorText)" />
+      <button @click="calculate" class="calculate_button">Построить</button>
 
-    <div class="friend-list">
-      <template v-for="friend in friendList" :key="friend.id">
-        <friend-card
-          :friend="friend"
-          :brightness="
-            (friend.friendList.length - minFriends) *
-              ((maxBrightness - minBrightness) / (maxFriends - minFriends)) +
-            minBrightness
-          "
-        />
+      <div class="user-list">
+        <h2 v-if="mySortedFriends.length">Список друзей</h2>
+        <template v-for="friend in mySortedFriends" :key="friend.id">
+          <friend-card
+            :friend="friend"
+            :brightness="
+              (friend.inFriendWithAmount - minFriends) *
+                ((maxBrightness - minBrightness) / (maxFriends - minFriends)) +
+              minBrightness
+            "
+          />
+        </template>
+      </div>
+    </div>
+
+    <div class="user_list-container">
+      <h2 v-if="userList.length">Список пользователей</h2>
+      <template v-for="user in userList" :key="user.id">
+        <user-card :user="user" />
       </template>
     </div>
   </div>
 </template>
 
 <script>
-import AddFriendForm from "@/components/AddFriendForm.vue";
+import AddUserForm from "@/components/AddUserForm.vue";
 import store from "@/store";
+import UserCard from "@/components/UserCard.vue";
 import FriendCard from "@/components/FriendCard.vue";
-import { ACCESS_TOKEN } from "@/utils.js";
+import { MAX_BRIGHTNESS, MIN_BRIGHTNESS } from "@/utils";
+import { MY_SORTED_FRIENDS } from "@/store/mutationTypes";
 
-const MIN_BRIGHTNESS = 50;
-const MAX_BRIGHTNESS = 170;
 export default {
   name: "HomeView",
-
-  created() {},
-
+  created() {
+    this.mySortedFriends = store.getters.getMySortedFriends;
+  },
   data() {
     return {
-      id: "",
-      friendList: store.getters.getFriendList,
       minBrightness: MIN_BRIGHTNESS,
       maxBrightness: MAX_BRIGHTNESS,
+      mySortedFriends: [],
     };
   },
   methods: {
-    async onInput(searcText) {
-      const searchRequest = `http://localhost:8010/proxy/method/users.search?q=${searcText}&access_token=${ACCESS_TOKEN}&v=5.131`;
-      // const searchRequest =
-      //   "https://api.vk.com/method/users.search?q=Nikita&access_token=vk1.a.YP3zbZX6vkO6-uTCXKBhyBzdagFSMCLqYPX4CAAu-6dUiOG1OzlC7U9vy827YQ4Yc86mQ7kU7_y1FOQdJh2hXbDJTsCXUXAuc7N4E1g54pmfAwP2TgbUF722zuihqDC9kyT1bS-q2PfXmE6GVXPQEMuQtXVaJycA6kTUX0mfBvHuXNUT9cTNJdortIOnK0v9&v=5.131";
-      const response = await fetch(searchRequest, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    setError(errorText) {
+      console.log(errorText);
+      this.$emit("error", errorText);
+    },
+    calculate() {
+      const allUsers = store.getters.getUserList;
+      allUsers.forEach((user) => {
+        user.inFriendWithAmount = 0;
       });
-      console.log(response);
-      const data = await response.json();
-      console.log(data);
+      const mySortedFriends = store.getters.getUserList
+        .filter((user) => user.isFriend)
+        .sort((a, b) => {
+          if (a.name + a.surname > b.name + b.surname) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
+      mySortedFriends.forEach((friend) => {
+        allUsers.forEach((user) => {
+          if (user.friendList.includes(friend.id)) {
+            friend.inFriendWithAmount++;
+          }
+        });
+      });
+      this.mySortedFriends = mySortedFriends;
+      store.commit(MY_SORTED_FRIENDS, mySortedFriends);
     },
   },
   computed: {
     averageFriends() {
       return (
-        this.friendList.reduce((acc, current) => {
-          return acc + current.friendList.length;
-        }, 0) / this.friendList.length
+        this.userList.reduce((acc, current) => {
+          return acc + current.inFriendWithAmount;
+        }, 0) / this.userList.length
       );
     },
     minFriends() {
-      const sortedFriendList = [...this.friendList].sort(
-        (a, b) => a.friendList.length - b.friendList.length
+      const sortedUserList = [...this.userList].sort(
+        (a, b) => a.inFriendWithAmount - b.inFriendWithAmount
       );
-      return sortedFriendList[0].friendList.length;
+      return sortedUserList[0].inFriendWithAmount;
     },
     maxFriends() {
-      const sortedFriendList = [...this.friendList].sort(
-        (a, b) => a.friendList.length - b.friendList.length
+      const sortedUserList = [...this.userList].sort(
+        (a, b) => a.inFriendWithAmount - b.inFriendWithAmount
       );
-      return sortedFriendList[sortedFriendList.length - 1].friendList.length;
+      return sortedUserList[sortedUserList.length - 1].inFriendWithAmount;
+    },
+    userList() {
+      return store.getters.getUserList;
+    },
+    authorized() {
+      return store.getters.getAuthorizedStatus;
     },
   },
   components: {
-    AddFriendForm,
+    AddUserForm,
+    UserCard,
     FriendCard,
   },
 };
 </script>
 
 <style>
-.friend-list {
+.main_container {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+.friend_list-container {
   display: flex;
   flex-direction: column;
-  margin: 50px auto;
+  flex-basis: 60%;
+}
+.user_list-container {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 30%;
+}
+.user-list {
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+  width: 100%;
+}
+.calculate_button {
+  width: 30%;
+  margin: 5px auto;
 }
 </style>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
   </head>
   <body>
     <noscript>
@@ -13,5 +14,10 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script type="text/javascript">
+      VK.init({
+        apiId: 8228596
+      });
+    </script>
   </body>
 </html>

@@ -7,15 +7,19 @@
     <img :src="friend['imgUrl']" alt="friend photo" class="friend-card-img" />
     <div class="friend-card-description">
       <h2 class="friend-card-description-header">
-        Name, Surname: {{ friend["name"] }}, {{ friend["surname"] }}
+        {{ friend["name"] }}, {{ friend["surname"] }}
       </h2>
-      <p class="friend-card-description-text">Sex: {{ friend["sex"] }}</p>
+      <p class="friend-card-description-text">
+        Sex: {{ friend["sex"] === 1 ? "female" : "male" }}
+      </p>
       <p class="friend-card-description-text">Age: {{ friend["age"] }}</p>
       <p class="friend-card-description-text">
         Friends amount: {{ friend["friendList"].length }}
       </p>
       <p class="friend-card-description-text">ID: {{ friend["id"] }}</p>
-      <p class="friend-card-description-text">{{ friend["friendList"] }}</p>
+      <p class="friend-card-description-text">
+        {{ friend["isFriend"] ? "Is my friend" : "Not my friend" }}
+      </p>
     </div>
   </div>
 </template>
@@ -24,9 +28,6 @@
 import router from "@/router";
 export default {
   name: "FriendCard",
-  data() {
-    return {};
-  },
   methods: {
     navigateToFriend() {
       router.push({ name: "friend", params: { id: this.friend["id"] } });
@@ -44,12 +45,12 @@ export default {
   display: flex;
   margin: 0 auto;
   cursor: pointer;
-  width: 60%;
+  width: 100%;
   height: 200px;
   border: 1px solid black;
   align-items: center;
   margin: 10px auto;
-  background-color: darkseagreen;
+  background-color: cornflowerblue;
 }
 .friend-card-img {
   width: 100px;

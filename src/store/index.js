@@ -1,71 +1,91 @@
 import { createStore } from "vuex";
 import {
-  ADD_FRIEND,
-  LOAD_FRIENDS,
-  MOCK_DATA,
-  REMOVE_FRIEND,
+  ADD_USER,
+  LOAD_USERS,
+  REMOVE_USER,
+  STORE_APIKEY,
+  AUTHORIZED,
+  MY_SORTED_FRIENDS,
 } from "./mutationTypes";
 
 export default createStore({
-  state: { friends: new Map() },
+  state: {
+    users: new Map(),
+    apiKey: "",
+    authorized: false,
+    mySortedFriends: [],
+  },
   getters: {
-    getFriendList(state) {
-      return Array.from(state.friends.values()).sort((friend1, friend2) => {
-        if (friend1.name > friend2.name) {
+    getUserList(state) {
+      return Array.from(state.users.values()).sort((user1, user2) => {
+        if (user1.name > user2.name) {
           return 1;
         } else {
           return -1;
         }
       });
     },
-    getFriendById: (state) => (id) => {
-      return state.friends.get(id);
+    getUserById: (state) => (id) => {
+      return state.users.get(id);
     },
     getMyFriendsById: (state) => (id) => {
-      return Array.from(state.friends.values())
-        .filter((friend) => {
-          return friend.friendList.includes(id);
+      return Array.from(state.users.values())
+        .filter((user) => {
+          return user.friendList.includes(id);
         })
-        .sort((friend1, friend2) => {
-          if (friend1.name > friend2.name) {
+        .sort((user1, user2) => {
+          if (user1.name > user2.name) {
             return 1;
           } else {
             return -1;
           }
         });
     },
+    getApiKey(state) {
+      return state.apiKey;
+    },
+    getAuthorizedStatus(state) {
+      return state.authorized;
+    },
+    getMySortedFriends(state) {
+      return state.mySortedFriends;
+    },
   },
   mutations: {
-    [ADD_FRIEND](state, payload) {
-      state.friends.set(payload["id"], payload["friend"]);
+    [ADD_USER](state, payload) {
+      state.users.set(payload["id"], payload["user"]);
       localStorage.setItem(
-        "friendList",
-        JSON.stringify(Array.from(state.friends.entries()))
+        "userList",
+        JSON.stringify(Array.from(state.users.entries()))
       );
     },
-    [REMOVE_FRIEND](state, payload) {
-      state.friends.delete(payload);
-    },
-    [LOAD_FRIENDS](state) {
-      const friendList = new Map(
-        JSON.parse(localStorage.getItem("friendList"))
-      );
-      state.friends = friendList;
-    },
-    [MOCK_DATA](state, payload) {
-      state.friends = payload;
+    [REMOVE_USER](state, payload) {
+      state.users.delete(payload);
       localStorage.setItem(
-        "friendList",
-        JSON.stringify(Array.from(state.friends.entries()))
+        "userList",
+        JSON.stringify(Array.from(state.users.entries()))
       );
+    },
+    [LOAD_USERS](state) {
+      const userList = new Map(JSON.parse(localStorage.getItem("userList")));
+      state.users = userList;
+    },
+    [STORE_APIKEY](state, payload) {
+      state.apiKey = payload;
+    },
+    [AUTHORIZED](state) {
+      state.authorized = true;
+    },
+    [MY_SORTED_FRIENDS](state, payload) {
+      state.mySortedFriends = payload;
     },
   },
   actions: {
-    addFriend({ commit }, payload) {
-      commit(ADD_FRIEND, payload);
+    addUser({ commit }, payload) {
+      commit(ADD_USER, payload);
     },
-    removeFriend({ commit }, payload) {
-      commit(REMOVE_FRIEND, payload);
+    removeUser({ commit }, payload) {
+      commit(REMOVE_USER, payload);
     },
   },
   modules: {},
