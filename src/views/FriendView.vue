@@ -3,12 +3,13 @@
     <router-link to="/">Home</router-link>
     <h1>{{ friend?.name }}, {{ friend?.surname }}</h1>
     <img :src="friend?.imgUrl" alt="friend photo" />
-    <h2>Друзья</h2>
+    <h2 v-if="friendList.length">Друзья</h2>
     <div class="friend-list">
       <template v-for="friend in friendList" :key="friend.id">
         <friend-card :friend="friend" />
       </template>
     </div>
+    <h2 v-if="posts.length">Посты</h2>
     <div
       class="friend-posts"
       v-for="post in this.posts.filter(

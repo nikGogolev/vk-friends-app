@@ -1,8 +1,16 @@
 <template>
   <div>
-    <input type="text" v-model="searchText" @input="search" />
+    <input
+      type="text"
+      v-model="searchText"
+      @input="search"
+      class="search-input"
+      placeholder="Введите имя пользователя или идентификатор"
+    />
     <search-result :addUser="addUser" :searchResult="searchResult" />
-    <button @click="search" v-if="searchResult.length">Загрузить еще</button>
+    <button @click="search" v-if="searchResult.length" class="more-button">
+      Загрузить еще
+    </button>
   </div>
 </template>
 
@@ -107,3 +115,16 @@ export default {
   },
 };
 </script>
+
+<style>
+.search-input {
+  width: 300px;
+  height: 30px;
+}
+.more-button {
+  padding: 5px 20px;
+  background-color: cornflowerblue;
+  border-color: cornflowerblue;
+  cursor: pointer;
+}
+</style>

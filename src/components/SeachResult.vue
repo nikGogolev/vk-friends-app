@@ -1,5 +1,5 @@
 <template>
-  <h2 v-if="searchResult?.length">Search results</h2>
+  <h2 v-if="searchResult?.length">Результаты поиска</h2>
   <template v-for="user in searchResult" :key="user.id">
     <search-result-card :user="user" @click="addUser(user)" />
   </template>

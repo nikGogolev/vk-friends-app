@@ -136,7 +136,10 @@ export default {
   width: 100%;
 }
 .calculate_button {
-  width: 30%;
+  padding: 5px 20px;
+  cursor: pointer;
   margin: 5px auto;
+  background-color: seagreen;
+  border-color: seagreen;
 }
 </style>
