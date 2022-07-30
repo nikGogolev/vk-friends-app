@@ -3,7 +3,7 @@
     <input
       type="text"
       v-model="searchText"
-      @input="onInput"
+      @input="searchTimeOut"
       class="search-input"
       placeholder="Введите имя пользователя или идентификатор"
     />
@@ -34,6 +34,15 @@ export default {
     this.apiKey = store.getters.getApiKey;
   },
   methods: {
+    async searchTimeOut() {
+      if (this.timer) {
+        clearTimeout(this.timer);
+        this.timer = null;
+      }
+      this.timer = setTimeout(() => {
+        this.onInput();
+      }, 500);
+    },
     async onInput() {
       try {
         const searchRequest = `${VK_URL}/users.search?q=${this.searchText}&access_token=${this.apiKey}&v=5.131`;
@@ -126,5 +135,6 @@ export default {
   background-color: cornflowerblue;
   border-color: cornflowerblue;
   cursor: pointer;
+  color: white;
 }
 </style>

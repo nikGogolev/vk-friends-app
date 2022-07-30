@@ -1,6 +1,6 @@
 <template>
   <div v-if="authorized">
-    <router-link to="/">Home</router-link>
+    <router-link to="/" class="home_link">Назад</router-link>
     <h1>{{ friend?.name }}, {{ friend?.surname }}</h1>
     <img :src="friend?.imgUrl" alt="friend photo" />
     <h2 v-if="friendList.length">Друзья</h2>
@@ -21,7 +21,9 @@
     >
       <user-post :post="post"></user-post>
     </div>
-    <button @click="getPosts">Загрузить еще</button>
+    <button @click="getPosts" v-if="posts.length" class="more-button">
+      Загрузить еще
+    </button>
   </div>
 </template>
 
@@ -60,7 +62,6 @@ export default {
   methods: {
     setError(errorText) {
       this.$emit("error", errorText);
-      console.log(errorText);
     },
     async getPosts() {
       try {
@@ -69,22 +70,11 @@ export default {
         const data = await jsonp(requestURL);
         if (data.response) {
           this.posts = [...this.posts, ...data.response.items];
-          console.log(
-            this.posts.filter(
-              (post) =>
-                typeof post.attachment === "undefined" ||
-                post.attachments.some(
-                  (attachment) => attachment.type === "photo"
-                )
-            )
-          );
         }
         if (data.error) {
-          console.log(data.error.error_msg);
           this.$emit("error", data.error.error_msg);
         }
       } catch (error) {
-        console.log(error.message || error.statusText);
         this.$emit("error", error.message || error.statusText);
       }
     },
@@ -114,5 +104,11 @@ export default {
   border: 1px solid cornflowerblue;
   padding: 10px;
   margin-bottom: 20px;
+}
+.home_link {
+  color: white;
+  background-color: cornflowerblue;
+  text-decoration: none;
+  padding: 5px 20px;
 }
 </style>

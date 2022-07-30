@@ -2,7 +2,13 @@
   <div class="main_container" v-if="authorized">
     <div class="friend_list-container">
       <add-user-form @error="(errorText) => setError(errorText)" />
-      <button @click="calculate" class="calculate_button">Построить</button>
+      <button
+        @click="calculate"
+        class="calculate_button"
+        v-if="userList.length"
+      >
+        Построить
+      </button>
 
       <div class="user-list">
         <h2 v-if="mySortedFriends.length">Список друзей</h2>
@@ -22,7 +28,7 @@
     <div class="user_list-container">
       <h2 v-if="userList.length">Список пользователей</h2>
       <template v-for="user in userList" :key="user.id">
-        <user-card :user="user" />
+        <user-card :user="user" @userRemoved="mySortedFriends = []" />
       </template>
     </div>
   </div>
@@ -50,7 +56,6 @@ export default {
   },
   methods: {
     setError(errorText) {
-      console.log(errorText);
       this.$emit("error", errorText);
     },
     calculate() {
@@ -90,13 +95,13 @@ export default {
       const sortedUserList = [...this.userList].sort(
         (a, b) => a.inFriendWithAmount - b.inFriendWithAmount
       );
-      return sortedUserList[0].inFriendWithAmount;
+      return sortedUserList[0]?.inFriendWithAmount;
     },
     maxFriends() {
       const sortedUserList = [...this.userList].sort(
         (a, b) => a.inFriendWithAmount - b.inFriendWithAmount
       );
-      return sortedUserList[sortedUserList.length - 1].inFriendWithAmount;
+      return sortedUserList[sortedUserList.length - 1]?.inFriendWithAmount;
     },
     userList() {
       return store.getters.getUserList;
@@ -141,5 +146,6 @@ export default {
   margin: 5px auto;
   background-color: seagreen;
   border-color: seagreen;
+  color: white;
 }
 </style>

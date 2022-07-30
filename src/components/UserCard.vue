@@ -26,6 +26,7 @@ export default {
   methods: {
     removeUser(id) {
       store.commit(REMOVE_USER, id);
+      this.$emit("userRemoved");
     },
   },
   props: {
