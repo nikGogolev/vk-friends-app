@@ -114,9 +114,13 @@ export default {
         const searchQuery = queryArray.splice(0, 25).join(",");
         const searchRequest = `${VK_URL}/execute?code=return [${searchQuery}];&access_token=${this.apiKey}&v=5.131`;
         const usersData = await jsonp(searchRequest);
-        usersData.response.forEach((item) => {
-          friendList.push(item[0]);
-        });
+        if (usersData.response) {
+          usersData.response.forEach((item) => {
+            if (!item[0].deactivated) {
+              friendList.push(item[0]);
+            }
+          });
+        }
       }
 
       const mySortedFriends = friendList.sort((a, b) => {
