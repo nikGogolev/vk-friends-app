@@ -4,19 +4,19 @@
     @click="navigateToFriend"
     :style="{ filter: `brightness(${brightness}%)` }"
   >
-    <img :src="friend['imgUrl']" alt="friend photo" class="friend-card-img" />
+    <img :src="friend.photo_100" alt="friend photo" class="friend-card-img" />
     <div class="friend-card-description">
       <h2 class="friend-card-description-header">
-        {{ friend["name"] }}, {{ friend["surname"] }}
+        {{ friend.first_name }}, {{ friend.last_name }}
       </h2>
       <p class="friend-card-description-text">
-        Sex: {{ friend["sex"] === 1 ? "female" : "male" }}
+        Sex: {{ friend.sex === 1 ? "female" : "male" }}
       </p>
-      <p class="friend-card-description-text">Age: {{ friend["age"] }}</p>
+      <p class="friend-card-description-text">Age: {{ friend.bdate }}</p>
       <p class="friend-card-description-text">
-        Friends amount: {{ friend["friendList"].length }}
+        Friends amount: {{ friend.counters?.friends }}
       </p>
-      <p class="friend-card-description-text">ID: {{ friend["id"] }}</p>
+      <p class="friend-card-description-text">ID: {{ friend.id }}</p>
       <p class="friend-card-description-text">
         {{ friend["isFriend"] ? "Is my friend" : "Not my friend" }}
       </p>
@@ -30,7 +30,7 @@ export default {
   name: "FriendCard",
   methods: {
     navigateToFriend() {
-      router.push({ name: "friend", params: { id: this.friend["id"] } });
+      router.push({ name: "friend", params: { id: this.friend.id } });
     },
   },
   props: {

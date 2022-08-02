@@ -50,6 +50,9 @@ export default createStore({
     getMySortedFriends(state) {
       return state.mySortedFriends;
     },
+    getFriendById: (state) => (id) => {
+      return state.mySortedFriends.find((item) => item.id === id);
+    },
   },
   mutations: {
     [ADD_USER](state, payload) {

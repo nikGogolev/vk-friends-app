@@ -1,12 +1,12 @@
 <template>
   <div class="user-card">
-    <img :src="user['imgUrl']" alt="user photo" class="user-card-img" />
+    <img :src="user.photo_100" alt="user photo" class="user-card-img" />
     <div class="user-card-description">
       <h2 class="user-card-description-header">
-        {{ user["name"] }}, {{ user["surname"] }}
+        {{ user.first_name }}, {{ user.last_name }}
       </h2>
       <p class="user-card-description-text">
-        {{ user["isFriend"] ? "Is my friend" : "Not my friend" }}
+        {{ user.isFriend ? "Is my friend" : "Not my friend" }}
       </p>
     </div>
     <button

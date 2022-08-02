@@ -1,10 +1,10 @@
 <template>
   <div v-if="authorized">
     <router-link to="/" class="home_link">Назад</router-link>
-    <h1>{{ friend?.name }}, {{ friend?.surname }}</h1>
-    <img :src="friend?.imgUrl" alt="friend photo" />
+    <h1>{{ friend?.first_name }}, {{ friend?.last_name }}</h1>
+    <img :src="friend?.photo_100" alt="friend photo" />
     <h2 v-if="friendList.length">Друзья</h2>
-    <div class="friend-list">
+    <div class="friend_view-friend_list">
       <template v-for="friend in friendList" :key="friend.id">
         <friend-card :friend="friend" />
       </template>
@@ -41,13 +41,13 @@ export default {
   },
   computed: {
     id() {
-      return this.$route.params["id"];
+      return this.$route.params.id;
     },
     friendList() {
-      return store.getters.getMyFriendsById(+this.$route.params["id"]);
+      return store.getters.getMyFriendsById(+this.$route.params.id);
     },
     friend() {
-      return store.getters.getUserById(+this.$route.params["id"]);
+      return store.getters.getFriendById(+this.$route.params.id);
     },
     authorized() {
       return store.getters.getAuthorizedStatus;
@@ -91,7 +91,7 @@ export default {
 };
 </script>
 <style>
-.friend-list {
+.friend_view-friend_list {
   width: 50%;
   margin: 0 auto;
 }
